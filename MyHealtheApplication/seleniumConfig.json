@@ -1,0 +1,61 @@
+﻿{
+  // This section is optional. Only if you want to use the Associate IDP Login Method or/and the Navigate to Homepage method.
+  "UrlConfig": {
+    // Associate IDP URI Config
+    "IdpBaseUri": "https://www.cerner.com",
+    "IdpLoginPath": "/accounts/login",
+    // Your applications base URI and paths
+    "BaseUri": "https://www.cerner.com",
+    //"BaseUri": "https://clientsitesetupadmindev.cerner.com/",
+    "BasePath": "/",
+    "HomePagePath": "/"
+  },
+
+  // Optional section. Only needed when using the Associate IDP Login method.
+  "IdpCredentials": {
+    "IdpUsername": "svcWebAutomatedTest",
+    "IdpPassword": "C3rn3r5012"
+  },
+
+  "WebDriverTimeouts": {
+    // Seconds the webdriver will wait until an expected element shows or an action occurs
+    "WebDriverWaitSeconds": 30
+  },
+
+  "ScreenshotConfig": {
+    // This just exposes the boolean on the SeleniumTestBase. It does not take any automatic screenshots.
+    "TakeFailureScreenshots": false,
+    // Where to place screen-shots per bowser. (This can also be provided when calling the screenshot method)
+    "ScreenshotHome": "out/screen-shots"
+  },
+
+  // Browsers to run tests as when using SeleniumEnabledBrowsersFixtureArgs
+  "EnabledBrowsers": {
+    // Browser to start the webdriver as when using the CreateDefaultWebDriver method.
+    // Type: firefox, chrome, ie, phantomjs, firefoxheadless, chromeheadless
+    "DefaultBrowser": "chrome",
+
+    // Browsers to run tests as when using SeleniumEnabledBrowsersFixtureArgs
+    "FirefoxEnabled": false,
+    "FirefoxHeadlessEnabled": false,
+    "GoogleChromeEnabled": false,
+    "GoogleChromeHeadlessEnabled": true,
+    "InternetExplorerEnabled": false,
+    "PhantomJsEnabled": false
+  },
+
+  "GridSettings": {
+    "UseGrid": false,
+    // FYI: due to an issue do not add a / at the end of the URL.
+    "GridHubHost": "http://selenium.cts.cernerdevtools.net",
+    "GridHubPort": 4444,
+    // Command timeout for RemoteWebDriver in seconds, if the session is queued in the grid past this time it will fail the test
+    "GridCommandTimeoutSeconds": 60,
+    // Specify if using Zalenium or not for the grid
+    "UsingZalenium": true,
+    // When using Zalenium, this is the Idle time of the nodes when waiting for a node or response from the node
+    "ZaleniumNodeIdleTimeSeconds": 150,
+    //when using Zalenium, enable or disable video recording
+    "EnableZaleniumVideoRecording": false
+  }
+}
