@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using CTSSeleniumFramework;
 using CTSSeleniumFramework.Enumerations;
@@ -26,7 +27,7 @@ namespace MyHealtheApplication
             _webDriver = CreateWebDriver(browser);
 
             // Login to specified application using Cerner Assocate IDP
-            _webDriver.Navigate().GoToUrl("https://healtheatcernerportal.cerner.com/dt/nutr/PedometerEntry.asp?BID=38715");
+            _webDriver.Navigate().GoToUrl("https://healtheatcerner.hac.wellness.us-1.healtheintent.com/pages/wellness/trackers/steps");
 
         }
 
@@ -36,25 +37,28 @@ namespace MyHealtheApplication
         public void Setup()
         {
             _webDriver.WaitForPageLoad();
-            _pageHeader = _webDriver.FindElement(By.ClassName("PageHeader"));
-            IWebElement headerElement = _pageHeader.FindElement(By.ClassName("oAuth"));
-            headerElement.Click();
+            _webDriver.FindElement(By.ClassName("main-content")).FindElement(By.TagName("button")).Click();
+
+
+
+            //IWebElement headerElement = _pageHeader.FindElement(By.ClassName("oAuth"));
+            //headerElement.Click();
             Thread.Sleep(TimeSpan.FromSeconds(1));
-            _webDriver.FindElement(By.Id("id_login_username")).SendKeys("youremailaddresshere");
-            _webDriver.FindElement(By.Id("id_login_password")).SendKeys("yourpasswordhere");
+            _webDriver.FindElement(By.Id("id_login_username")).SendKeys("korada.prashanth@gmail.com");
+            _webDriver.FindElement(By.Id("id_login_password")).SendKeys("******");
             _webDriver.FindElement(By.Id("signin")).Click();
             Thread.Sleep(TimeSpan.FromSeconds(1));
-            var stepsTitle = _webDriver.FindElement(By.ClassName("dtPageTitle")).Text;
-            Assert.AreEqual("Steps", stepsTitle);
-            _webDriver.FindElement(By.ClassName("ui-datepicker-trigger")).Click();
-            if (_webDriver.FindElement(By.Id("ui-datepicker-div")).Displayed)
-            {
-                _webDriver.FindElement(By.ClassName("ui-datepicker-month")).Click();
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-                _webDriver.FindElement(By.ClassName("ui-datepicker-month")).FindElements(By.TagName("option"))[0].Click();
-                _webDriver.FindElement(By.CssSelector(".ui-datepicker-calendar tbody tr:nth-of-type(1) td:nth-of-type(2)")).Click();
+            //var stepsTitle = _webDriver.FindElement(By.ClassName("dtPageTitle")).Text;
+            //Assert.AreEqual("Steps", stepsTitle);
+            //_webDriver.FindElement(By.ClassName("ui-datepicker-trigger")).Click();
+            //if (_webDriver.FindElement(By.Id("ui-datepicker-div")).Displayed)
+            //{
+            //    _webDriver.FindElement(By.ClassName("ui-datepicker-month")).Click();
+            //    Thread.Sleep(TimeSpan.FromSeconds(1));
+            //    _webDriver.FindElement(By.ClassName("ui-datepicker-month")).FindElements(By.TagName("option"))[0].Click();
+            //    _webDriver.FindElement(By.CssSelector(".ui-datepicker-calendar tbody tr:nth-of-type(1) td:nth-of-type(2)")).Click();
 
-            }
+            //}
 
 
         }
@@ -88,16 +92,41 @@ namespace MyHealtheApplication
         [Test]
         public void MyWebsiteHomepage_Header_IsVisible()
         {
-            do
+            _webDriver.WaitForPageLoad();
+            var datesList = GetAllDatesAndInitializeTickets(DateTime.Parse("01/01/2021"), DateTime.Now);
+
+            for (int i = 0; i < datesList.Count; i++)
             {
+                
                 Thread.Sleep(TimeSpan.FromSeconds(1));
-                _webDriver.FindElement(By.Id("DateSelectorRight")).Click();
-                _webDriver.FindElement(By.Id("steps")).SendKeys("10000");
-                IWebElement inputElement1 = _webDriver.FindElement(By.ClassName("data-entry-grid-row")).FindElement(By.TagName("input"));
-                inputElement1.Submit();
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-            } while (_webDriver.FindElement(By.Id("DateSelectorRight")).GetAttribute("title")!= "Cannot select future dates");
+                _webDriver.FindElement(By.XPath("//span[.='Add Entry']")).Click();
+                var dateIpunt= _webDriver.FindElement(By.ClassName("react-datepicker__input-container")).FindElements(By.TagName("input"))[1];
+                dateIpunt.Clear();
+                dateIpunt.SendKeys(datesList[i]);
+
+
+                var inputs = _webDriver.FindElement(By.TagName("form")).FindElements(By.TagName("input"));
+
+                inputs[2].SendKeys("10000");
+                _webDriver.FindElement(By.XPath("//span[.='Save']")).Click();
+                Thread.Sleep(TimeSpan.FromSeconds(3));
+
+            }
+            
           
+        }
+
+
+        public List<string> GetAllDatesAndInitializeTickets(DateTime startingDate, DateTime endingDate)
+        {
+            List<string> allDates = new List<string>();
+
+
+            for (DateTime i = startingDate; i <= endingDate; i = i.AddDays(1))
+            {
+                allDates.Add(i.ToString("MM/dd/yyyy"));
+            }
+            return allDates;
         }
     }
 }
